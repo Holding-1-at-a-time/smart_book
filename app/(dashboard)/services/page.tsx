@@ -1,11 +1,12 @@
 "use client"
 
-import { useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { api } from "@/convex/_generated/api"
+import { useQuery } from "convex/react"
 import { Clock, DollarSign } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function ServicesPage() {
     const services = useQuery(api.services.getAllServices) || []
@@ -37,7 +38,7 @@ export default function ServicesPage() {
                             <Card key={service._id} className="overflow-hidden">
                                 {service.imageUrl && (
                                     <div className="h-48 overflow-hidden">
-                                        <img
+                                        <Image
                                             src={service.imageUrl || "/placeholder.svg"}
                                             alt={service.name}
                                             className="w-full h-full object-cover transition-transform hover:scale-105"

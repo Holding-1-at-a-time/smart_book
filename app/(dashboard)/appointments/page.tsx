@@ -1,7 +1,7 @@
-import { AppointmentList } from "@/components/appointments/appointment-list"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CalendarPlus } from "lucide-react"
+import { AppointmentList } from "@/components/appointments/appointment-list"
 
 export default function AppointmentsPage() {
     return (
