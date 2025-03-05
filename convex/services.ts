@@ -13,8 +13,9 @@ import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
  */
 export const createService = mutation({
     args: {
+        userId: v.id("users"),
         organizationId: v.id("organizations"),
-        serviceId: v.string(),
+        tenantId: v.id("tenants"),
         serviceName: v.string(),
         serviceDescription: v.string(),
         duration: v.number(), // in minutes
@@ -30,9 +31,22 @@ export const createService = mutation({
         isActive: v.boolean(),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert("services", args);
+        if (!args.organizationId) {
+            throw new Error("Organization ID is required");
+        }
+
+        try {
+            return await ctx.db
+                .query("services")
+                .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
+                .collect();
+        } catch (error) {
+            console.error("Error querying services by organization ID:", error);
+            throw new Error("Failed to retrieve services");
+        }
     },
 });
+
 /**
  * Gets all active services from the database.
  *
@@ -40,11 +54,32 @@ export const createService = mutation({
  * @returns A promise that resolves to an array of all active services.
  */
 export const getAllActiveServices = query({
-    handler: async ( args, ctx) => {
-        return await ctx.db.query("services").withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId)).withIndex("by isActive", (q) => q.eq("isActive", true)).all();
+    args: {
+        organizationId: v.id("organizations"),
+        serviceId: v.string(),
+        serviceName: v.string(),
+        userId: v.id("users"),
+        serviceDescription: v.string(),
+        duration: v.number(), // in minutes 
+        basePrice: v.number(),
+        category: v.union(
+            v.literal("interior"),
+            v.literal("exterior"),
+            v.literal("full"),
+            v.literal("paint_Correction"),
+            v.literal("ceramic_Coating")
+        ),
     },
-});
+    handler: async (ctx, args) => {
+        return await ctx.db
+            .query("services")
+            .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
+            .collect()
 
+
+    },
+},
+);
 /**
  * Retrieves a list of services based on the provided filters.
  *
@@ -53,13 +88,59 @@ export const getAllActiveServices = query({
  * @returns A promise that resolves to a list of services.
  */
 
-/**
- * Gets a service by its ID.
- *
- * @param ctx - The Convex query context.
- * @param args - The service ID.
- * @returns A promise that resolves to the service.
- */
+export const getServicesByFilters = query({
+    args: {
+        organizationId: v.id("organizations"),
+        serviceId: v.string(),
+        serviceName: v.string(),
+        userId: v.id("users"),
+        serviceDescription: v.string(),
+        duration: v.number(), // in minutes
+        basePrice: v.number(),
+        category: v.union(
+            v.literal("interior"),
+            v.literal("exterior"),
+            v.literal("full"),
+            v.literal("paint_Correction"),
+            v.literal("ceramic_Coating")
+        ),
+    },
+    handler: async (ctx, args) => {
+        const query = ctx.db.query("services");
+
+        if (args.organizationId) {
+            query.withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId));
+        }
+
+
+        if (args.serviceName) {
+            query.withIndex("by_serviceName", (q) => q.eq("serviceName", args.serviceName));
+        }
+
+        if (args.userId) {
+            query.withIndex("by_userId", (q) => q.eq("userId", args.userId));
+        }
+
+        if (args.serviceDescription) {
+            query.withIndex("by_serviceDescription", (q) => q.eq("serviceDescription", args.serviceDescription));
+        }
+
+        if (args.duration) {
+            query.withIndex("by_duration", (q) => q.eq("duration", args.duration));
+        }
+
+        if (args.basePrice) {
+            query.withIndex("by_basePrice", (q) => q.eq("basePrice", args.basePrice));
+        }
+
+        if (args.category) {
+            query.withIndex("by_category", (q) => q.eq("category", args.category));
+        }
+
+        return await query.collect();
+    },
+});
+
 /**
  * Gets a service by its ID.
  *

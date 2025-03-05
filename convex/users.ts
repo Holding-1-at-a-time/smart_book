@@ -1,70 +1,81 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
+import { Id } from "convex/server";
 
-export const createUser = mutation {
-    args: {
-        userId: string;
-name: string;
-email: string;
-imageUrl ?: string | null;
-},
-},
+
 /**
  * Creates a new user in the database, with a default role of Detailer.
  *
  * @param ctx - The Convex mutation context.
- * @param args - The arguments to create a user: `userId`, `name`, `email`, and `imageUrl` (optional).
+ * @param args - The arguments to create a user:
+ *   - `userId`: the ID of the user
+ *   - `name`: the name of the user
+ *   - `email`: the email of the user
+ *   - `imageUrl`: the image URL of the user (optional, default `null`)
  * @returns The ID of the created user.
  */
-handler: async (ctx, args) => {
-    const existingUser = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-        .first()
+export const createUser = mutation({
+    args: {
+        userId: v.id("users"),
+        organizationId: v.id("organizations"),
+        tenantId: v.id("tenants"),
+        name: v.string(),
+        email: v.string(),
+        imageUrl: v.optional(v.string()),
+        vehiclePreferences: v.array(v.string()),
+        marketingPreferences: v.array(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const userExists = await ctx.db.query("users").withIndex("by_userId", q => q.eq("userId", args.userId)).first();
+        if (userExists) {
+            throw new Error("User already exists");
+        }
 
-    if (existingUser) {
-        return existingUser._id
-    }
-
-    return ctx.db.insert("users", {
-        userId: args.userId,
-        name: args.name,
-        email: args.email,
-        imageUrl: args.imageUrl ?? null,
-        role: "Detailer" as const, // Default role
-        userOrganizations: [] as Array<{
-            organizationId: string;
-            role: string;
-        }>,
-        preferredLanguage: "" as const,
-        preferredVehicle: {
-            VIN: "" as const;
-            make: "" as const;
-            model: "" as const;
-            year: "" as const;
-            color: "" as const;
-        },
-        marketingPreferences: {
-            smsOptIn: false as const;
-            emailOptIn: false as const;
-        },
-        phoneNumberVerified: false as const,
-        preferredDetailerId: null as string | null,
-    }).then((user) => user._id)
-    /**
-     * Creates a new user in the database, with a default role of Detailer.
-     *
-     * @param ctx - The Convex mutation context.
-     * @param args - The arguments to create a user.
-     * @returns The ID of the created user.
-     */
+        const now = new Date().toISOString();
+        return ctx.db.insert("users", {
+            userId: "" + args.userId,
+            name: args.name,
+            email: args.email,
+            organizationId: args.organizationId,
+            tokenIdentifier: "",
+            role: { customer: true, admin: false, detailer: false },
+            clerkId: "",
+            nickname: "",
+            userType: "",
+            created_at: now,
+            given_name: args.name.split(' ')[0] || "",
+            last_login: "",
+            updated_at: now,
+            family_name: args.name.split(' ').slice(1).join(' ') || "",
+            loyalty_tier: "",
+            phone_number: "",
+            special_notes: "",
+            email_verified: false,
+            total_bookings: 0,
+            default_tenant_id: "",
+            userOrganizations: [],
+            preferred_language: "",
+            phone_number_verified: false,
+            preferred_detailer_id: "",
+            vehicle_preferences: {
+                VIN: args.vehiclePreferences[0],
+                make: args.vehiclePreferences[1],
+                year: args.vehiclePreferences[2],
+                color: args.vehiclePreferences[3],
+                model: args.vehiclePreferences[4],
+            },
+            marketing_preferences: args.marketingPreferences ?? {},
+        });
+    },
+}
+)
 
 export const getUser = query({
     args: { userId: v.string() },
     handler: async (ctx, args) => {
         return ctx.db
             .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+            .withIndex("by_userId", (q) => q.eq("userId", Id('users', args.userId)))
             .first()
     },
 })
@@ -82,7 +93,7 @@ export const updateUserPreferences = mutation({
     handler: async (ctx, args) => {
         const user = await ctx.db
             .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+            .withIndex("by_userId", (q) => q.eq("userId", Id('users')))
             .first()
 
         if (!user) {
@@ -93,5 +104,4 @@ export const updateUserPreferences = mutation({
             preferences: args.preferences,
         })
     },
-})
-
+});

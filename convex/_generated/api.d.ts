@@ -15,7 +15,6 @@ import type {
 } from "convex/server";
 import type * as appointments from "../appointments.js";
 import type * as conversations from "../conversations.js";
-import type * as myFunctions from "../myFunctions.js";
 import type * as services from "../services.js";
 import type * as users from "../users.js";
 
@@ -30,7 +29,6 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   appointments: typeof appointments;
   conversations: typeof conversations;
-  myFunctions: typeof myFunctions;
   services: typeof services;
   users: typeof users;
 }>;

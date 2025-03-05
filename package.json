@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm-run-all --parallel dev:frontend dev:backend",
-    "dev:frontend": "next dev --turbopack",
+    "dev:frontend": "next dev --turbopack --experimental-https",
     "dev:backend": "convex dev",
     "predev": "convex dev --until-success && convex dashboard",
     "build": "next build",
@@ -12,31 +12,44 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.22.12",
-    "@clerk/nextjs": "^6.11.2",
+    "@clerk/clerk-react": "^5.24.1",
+    "@clerk/nextjs": "^6.12.3",
     "@radix-ui/react-slot": "^1.1.2",
+    "@tailwindcss/postcss": "^4.0.9",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "ai": "^4.1.51",
+    "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.17.4",
+    "convex": "^1.19.5",
     "lucide-react": "^0.477.0",
-    "next": "15.1.3",
+    "mkcert": "^3.2.0",
+    "next": "15.2.1",
+    "next-themes": "^0.4.4",
     "npm-run-all": "^4.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "shadcn-ui": "^0.9.5",
+    "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.3",
-    "postcss": "^8",
-    "prettier": "3.4.2",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "@eslint/eslintrc": "^3.3.0",
+    "@types/node": "^22.13.9",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "15.2.1",
+    "postcss": "^8.5.3",
+    "prettier": "3.5.3",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5.8.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@vercel/speed-insights"
+    ]
   }
 }

@@ -119,6 +119,8 @@ export default defineSchema({
     .index("by_basePrice", ["basePrice"])
     .index("by_category", ["category"])
     .index("by_duration", ["duration"])
+    .index("by_userId", ["userId"])
+    .index("by_serviceDescription", ["serviceDescription"])
     .index("by_category", ["category"])
     .index("by_orgId", ["organizationId"]),
 
@@ -150,7 +152,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_orgId", ["organizationId"])
-    .index("by_userId", ["userId"])
+    .index("by_user", ["userId"])
     .index("by_date", ["date"])
     .index("by_status", ["status"]),
 
@@ -190,7 +192,9 @@ export default defineSchema({
   conversations: defineTable({
     organizationId: v.id("organizations"),
     userId: v.id("users"),
+    appointmentId: v.id("appointments"),
     tenantId: v.id("tenants"),
+    initialMessage: v.string(),
     messages: v.array(
       v.object({
         role: v.string(), // "user", "assistant"
@@ -198,12 +202,14 @@ export default defineSchema({
         timestamp: v.number(),
       }),
     ),
-    appointmentId: v.optional(v.id("appointments")),
+    messageRead: v.boolean(),
+    messageSent: v.boolean(),
+    messageReceived: v.boolean(),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_userId", ["userId"])
+  }).index("by_user", ["userId"])
     .index("by_orgId", ["organizationId"])
-    .index("by_appointmentId", ["appointmentId"]),
+    .index("by_appointment", ["appointmentId"]),
 
   /**
    * Represents the tenants table in the database.

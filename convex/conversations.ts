@@ -1,11 +1,14 @@
 import { v } from "convex/values"
-import { mutation, query } from "./_generated/server"
+import { mutation, query, QueryCtx } from "./_generated/server"
+import { Id } from "./_generated/dataModel"
 
 export const createConversation = mutation({
     args: {
-        userId: v.string(),
+        userId: v.id("users"),
+        organizationId: v.id("organizations"),
+        tenantId: v.id("tenants"),
         initialMessage: v.string(),
-        appointmentId: v.optional(v.id("appointments")),
+        appointmentId: (v.id("appointments")),
     },
     handler: async (ctx, args) => {
         return ctx.db.insert("conversations", {
@@ -20,6 +23,12 @@ export const createConversation = mutation({
             appointmentId: args.appointmentId,
             createdAt: Date.now(),
             updatedAt: Date.now(),
+            tenantId: args.tenantId,
+            initialMessage: "",
+            messageRead: false,
+            messageSent: false,
+            messageReceived: false,
+            organizationId: args.organizationId,
         })
     },
 })
@@ -54,12 +63,14 @@ export const addMessageToConversation = mutation({
 })
 
 export const getUserConversations = query({
-    args: { userId: v.string() },
-    handler: async (ctx, args) => {
-        return ctx.db
-            .query("conversations")
-            .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-            .collect()
+    args: { userId: v.id("users") },
+    handler: async (ctx: QueryCtx, args: { userId: Id<"users"> }): Promise<Document<"conversations">[]> => {
+        return await ctx.db.query("conversations").filter(q => q.eq("userId", args.userId))
+            .order("desc")
+            .collect();
     },
-})
+}
+);
+
+
 

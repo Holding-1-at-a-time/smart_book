@@ -1,8 +1,10 @@
+
 import { CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle, ArrowRight, Car, Calendar, MessageSquare, Shield } from "lucide-react"
+import Image from "next/image"
 
 export default function LandingPage() {
     return (
@@ -54,7 +56,7 @@ export default function LandingPage() {
                                 </div>
                             </div>
                             <div className="flex items-center justify-center">
-                                <img
+                                <Image
                                     src="/placeholder.svg?height=550&width=550"
                                     alt="Car Detailing"
                                     className="rounded-lg object-cover"
@@ -112,7 +114,7 @@ export default function LandingPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">
-                                        Your data is protected with enterprise-grade security, and our real-time updates ensure you're
+                                        Your data is protected with enterprise-grade security, and our real-time updates ensure you&apos;re
                                         always informed.
                                     </p>
                                 </CardContent>
@@ -130,7 +132,7 @@ export default function LandingPage() {
                                 </div>
                                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">Our Detailing Packages</h2>
                                 <p className="max-w-[900px] text-muted-foreground md:text-xl">
-                                    Professional auto detailing services tailored to your vehicle's needs
+                                    Professional auto detailing services tailored to your vehicle&apos;s needs
                                 </p>
                             </div>
                         </div>
@@ -237,7 +239,7 @@ export default function LandingPage() {
                                 </div>
                                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">What Our Customers Say</h2>
                                 <p className="max-w-[900px] text-muted-foreground md:text-xl">
-                                    Don't just take our word for it - hear from our satisfied customers
+                                    Don&apos;t just take our word for it - hear from our satisfied customers
                                 </p>
                             </div>
                         </div>
@@ -246,7 +248,7 @@ export default function LandingPage() {
                                 <CardContent className="pt-6">
                                     <div className="flex flex-col gap-4">
                                         <div className="flex items-center gap-4">
-                                            <img
+                                            <Image
                                                 src="/placeholder.svg?height=40&width=40"
                                                 alt="Avatar"
                                                 className="rounded-full"
@@ -259,8 +261,8 @@ export default function LandingPage() {
                                             </div>
                                         </div>
                                         <p className="text-muted-foreground">
-                                            "The AI assistant recommended the perfect detailing package for my car. The scheduling was
-                                            seamless, and my car looks amazing!"
+                                            &quot;The AI assistant recommended the perfect detailing package for my car. The scheduling was
+                                            seamless, and my car looks amazing!&quot;
                                         </p>
                                     </div>
                                 </CardContent>
@@ -269,8 +271,7 @@ export default function LandingPage() {
                                 <CardContent className="pt-6">
                                     <div className="flex flex-col gap-4">
                                         <div className="flex items-center gap-4">
-                                            <img
-                                                src="/placeholder.svg?height=40&width=40"
+                                            <Image                                                src="/placeholder.svg?height=40&width=40"
                                                 alt="Avatar"
                                                 className="rounded-full"
                                                 width={40}
@@ -282,8 +283,8 @@ export default function LandingPage() {
                                             </div>
                                         </div>
                                         <p className="text-muted-foreground">
-                                            "I love how easy it is to book appointments and manage my schedule. The ceramic coating service
-                                            was top-notch and worth every penny."
+                                            &quot;I love how easy it is to book appointments and manage my schedule. The ceramic coating service
+                                            was top-notch and worth every penny.&quot;
                                         </p>
                                     </div>
                                 </CardContent>
@@ -292,7 +293,7 @@ export default function LandingPage() {
                                 <CardContent className="pt-6">
                                     <div className="flex flex-col gap-4">
                                         <div className="flex items-center gap-4">
-                                            <img
+                                            <Image
                                                 src="/placeholder.svg?height=40&width=40"
                                                 alt="Avatar"
                                                 className="rounded-full"
@@ -305,8 +306,8 @@ export default function LandingPage() {
                                             </div>
                                         </div>
                                         <p className="text-muted-foreground">
-                                            "The DetailBot AI assistant answered all my questions and helped me choose the right service. My
-                                            car hasn't looked this good since I bought it!"
+                                            &quot;The DetailBot AI assistant answered all my questions and helped me choose the right service. My
+                                            car hasn&apos;t looked this good since I bought it!&quot;
                                         </p>
                                     </div>
                                 </CardContent>

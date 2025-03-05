@@ -1,8 +1,14 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import ConvexClientProvider from "@/components/ConvexClientProvider";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from '@vercel/analytics/react';
+import { ClerkProvider } from '@clerk/nextjs';
+import { dark } from '@clerk/themes';
+import { Geist, Geist_Mono } from 'next/font/google';
+import type { Metadata } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import './globals.css';
+import ConvexClientProvider from '@/components/ConvexClientProvider';
+import { cn } from '@/lib/utils';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ToastProvider } from '@/components/ToastProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,16 +34,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <html lang="en" suppressHydrationWarning>
+      <ClerkProvider
+        appearance={{
+          baseTheme: [dark],
+          variables: {
+            colorPrimary: "#00AE98",
+            colorTextSecondary: "#707070",
+            colorShimmer: "#00AE98",
+          },
+          layout: {
+            animations: true,
+            shimmer: true,
+          },
+        }}
       >
-        <ClerkProvider dynamic>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
-            <ConvexClientProvider>{children}</ConvexClientProvider>
+        <ConvexClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <ToastProvider />
+            <body className={cn(`${geistSans.variable} ${geistMono.variable} antialiased`, 'bg-gray-100 text-white min-h-screen')}>
+              <main className="min-h-screen bg-gray-100 pt-16">
+                {children}
+              </main>
+            </body>
+            <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
-        </ClerkProvider>
-      </body>
+        </ConvexClientProvider>
+      </ClerkProvider>
     </html>
   );
-}
+};

@@ -9,7 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 export default function ServicesPage() {
-    const services = useQuery(api.services.getAllServices) || []
+    const services = useQuery(api.services.getAllActiveServices);
 
     // Group services by category
     const servicesByCategory = services.reduce(
@@ -40,22 +40,22 @@ export default function ServicesPage() {
                                     <div className="h-48 overflow-hidden">
                                         <Image
                                             src={service.imageUrl || "/placeholder.svg"}
-                                            alt={service.name}
+                                            alt={service.serviceName}
                                             className="w-full h-full object-cover transition-transform hover:scale-105"
                                         />
                                     </div>
                                 )}
                                 <CardHeader>
-                                    <CardTitle>{service.name}</CardTitle>
+                                    <CardTitle>{service.serviceName}</CardTitle>
                                     <CardDescription className="flex items-center gap-2">
-                                        <DollarSign className="h-4 w-4" />${service.price}
+                                        <DollarSign className="h-4 w-4" />${service.basePrice}
                                         <span className="mx-2">•</span>
                                         <Clock className="h-4 w-4" />
                                         {service.duration} min
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground">{service.description}</p>
+                                    <p className="text-sm text-muted-foreground">{service.serviceDescription}</p>
                                 </CardContent>
                                 <CardFooter>
                                     <Button asChild className="w-full">
