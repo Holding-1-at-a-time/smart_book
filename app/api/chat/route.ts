@@ -6,7 +6,7 @@ export const runtime = "edge"
 
 export async function POST(req: Request) {
     try {
-        const { messages, userId, appointmentContext } = await req.json()
+        const { messages, appointmentContext } = await req.json()
 
         // System prompt with context about the auto detailing business
         const systemPrompt = `You are an AI assistant for an auto detailing business. 
