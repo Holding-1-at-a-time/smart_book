@@ -1,14 +1,15 @@
 "use client"
 
-import { useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { api } from "@/convex/_generated/api"
+import { useQuery } from "convex/react"
 import { Clock, DollarSign } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function ServicesPage() {
-    const services = useQuery(api.services.getAllServices) || []
+    const services = useQuery(api.services.getAllActiveServices);
 
     // Group services by category
     const servicesByCategory = services.reduce(
@@ -37,24 +38,24 @@ export default function ServicesPage() {
                             <Card key={service._id} className="overflow-hidden">
                                 {service.imageUrl && (
                                     <div className="h-48 overflow-hidden">
-                                        <img
+                                        <Image
                                             src={service.imageUrl || "/placeholder.svg"}
-                                            alt={service.name}
+                                            alt={service.serviceName}
                                             className="w-full h-full object-cover transition-transform hover:scale-105"
                                         />
                                     </div>
                                 )}
                                 <CardHeader>
-                                    <CardTitle>{service.name}</CardTitle>
+                                    <CardTitle>{service.serviceName}</CardTitle>
                                     <CardDescription className="flex items-center gap-2">
-                                        <DollarSign className="h-4 w-4" />${service.price}
+                                        <DollarSign className="h-4 w-4" />${service.basePrice}
                                         <span className="mx-2">•</span>
                                         <Clock className="h-4 w-4" />
                                         {service.duration} min
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground">{service.description}</p>
+                                    <p className="text-sm text-muted-foreground">{service.serviceDescription}</p>
                                 </CardContent>
                                 <CardFooter>
                                     <Button asChild className="w-full">

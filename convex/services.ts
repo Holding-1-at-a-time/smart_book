@@ -1,53 +1,219 @@
-import { v } from "convex/values"
-import { mutation, query } from "./_generated/server"
+import { v } from "convex/values";
+import { Doc, Id } from "./_generated/dataModel";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 
+
+
+/**
+ * Creates a new service in the database.
+ *
+ * @param ctx - The Convex mutation context.
+ * @param args - The arguments to create a service.
+ * @returns A promise that resolves to the created service.
+ */
 export const createService = mutation({
     args: {
-        name: v.string(),
-        description: v.string(),
-        duration: v.number(),
-        price: v.number(),
+        userId: v.id("users"),
+        organizationId: v.id("organizations"),
+        tenantId: v.id("tenants"),
+        serviceName: v.string(),
+        serviceDescription: v.string(),
+        duration: v.number(), // in minutes
+        basePrice: v.number(),
         imageUrl: v.optional(v.string()),
-        category: v.string(),
+        category: v.union(
+            v.literal("interior"),
+            v.literal("exterior"),
+            v.literal("full"),
+            v.literal("paint_Correction"),
+            v.literal("ceramic_Coating")
+        ),
+        isActive: v.boolean(),
     },
     handler: async (ctx, args) => {
-        return ctx.db.insert("services", {
-            ...args,
-            isActive: true,
-        })
-    },
-})
+        if (!args.organizationId) {
+            throw new Error("Organization ID is required");
+        }
 
-export const getAllServices = query({
-    handler: async (ctx) => {
-        return ctx.db
-            .query("services")
-            .filter((q) => q.eq(q.field("isActive"), true))
-            .collect()
+        try {
+            return await ctx.db
+                .query("services")
+                .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
+                .collect();
+        } catch (error) {
+            console.error("Error querying services by organization ID:", error);
+            throw new Error("Failed to retrieve services");
+        }
     },
-})
+});
+
+/**
+ * Gets all active services from the database.
+ *
+ * @param ctx - The Convex query context.
+ * @returns A promise that resolves to an array of all active services.
+ */
+export const getAllActiveServices = query({
+    args: {
+        organizationId: v.id("organizations"),
+        serviceId: v.string(),
+        serviceName: v.string(),
+        userId: v.id("users"),
+        serviceDescription: v.string(),
+        duration: v.number(), // in minutes 
+        basePrice: v.number(),
+        category: v.union(
+            v.literal("interior"),
+            v.literal("exterior"),
+            v.literal("full"),
+            v.literal("paint_Correction"),
+            v.literal("ceramic_Coating")
+        ),
+    },
+    handler: async (ctx, args) => {
+        return await ctx.db
+            .query("services")
+            .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
+            .collect()
+
+
+    },
+},
+);
+/**
+ * Retrieves a list of services based on the provided filters.
+ *
+ * @param ctx - The Convex query context.
+ * @param args - The filter arguments.
+ * @returns A promise that resolves to a list of services.
+ */
+
+export const getServicesByFilters = query({
+    args: {
+        organizationId: v.id("organizations"),
+        serviceId: v.string(),
+        serviceName: v.string(),
+        userId: v.id("users"),
+        serviceDescription: v.string(),
+        duration: v.number(), // in minutes
+        basePrice: v.number(),
+        category: v.union(
+            v.literal("interior"),
+            v.literal("exterior"),
+            v.literal("full"),
+            v.literal("paint_Correction"),
+            v.literal("ceramic_Coating")
+        ),
+    },
+    handler: async (ctx, args) => {
+        const query = ctx.db.query("services");
+
+        if (args.organizationId) {
+            query.withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId));
+        }
+
+
+        if (args.serviceName) {
+            query.withIndex("by_serviceName", (q) => q.eq("serviceName", args.serviceName));
+        }
+
+        if (args.userId) {
+            query.withIndex("by_userId", (q) => q.eq("userId", args.userId));
+        }
+
+        if (args.serviceDescription) {
+            query.withIndex("by_serviceDescription", (q) => q.eq("serviceDescription", args.serviceDescription));
+        }
+
+        if (args.duration) {
+            query.withIndex("by_duration", (q) => q.eq("duration", args.duration));
+        }
+
+        if (args.basePrice) {
+            query.withIndex("by_basePrice", (q) => q.eq("basePrice", args.basePrice));
+        }
+
+        if (args.category) {
+            query.withIndex("by_category", (q) => q.eq("category", args.category));
+        }
+
+        return await query.collect();
+    },
+});
+
+/**
+ * Gets a service by its ID.
+ *
+ * @param ctx - The Convex query context.
+ * @param args - The service ID.
+ * @returns A promise that resolves to the service.
+ */
 
 export const getServiceById = query({
-    args: { serviceId: v.id("services") },
-    handler: async (ctx, args) => {
-        return ctx.db.get(args.serviceId)
+    args: {
+        serviceId: v.string(),
     },
-})
+    handler: async (ctx: QueryCtx, args: { serviceId: Id<"services"> }): Promise<Doc<"services"> | null> => {
+        const result = await ctx.db.get(args.serviceId);
+        if (!result) {
+            throw new Error(`Service with ID ${args.serviceId} not found`);
+        }
+        return result;
+    },
+});
 
+/**
+ * Updates a service in the database.
+ *
+ * @param ctx - The Convex mutation context.
+ * @param args - The service ID and the fields to update.
+ * @returns A promise that resolves to the updated service.
+ */
 export const updateService = mutation({
     args: {
+        /**
+         * The ID of the service to update.
+         */
         serviceId: v.id("services"),
+        /**
+         * The name of the service.
+         */
         name: v.optional(v.string()),
+        /**
+         * The description of the service.
+         */
         description: v.optional(v.string()),
+        /**
+         * The duration of the service in minutes.
+         */
         duration: v.optional(v.number()),
+        /**
+         * The price of the service in dollars.
+         */
         price: v.optional(v.number()),
+        /**
+         * The image URL for the service.
+         */
         imageUrl: v.optional(v.string()),
+        /**
+         * The category of the service.
+         */
         category: v.optional(v.string()),
+        /**
+         * Whether the service is active or not.
+         */
         isActive: v.optional(v.boolean()),
     },
-    handler: async (ctx, args) => {
-        const { serviceId, ...fields } = args
-        return ctx.db.patch(serviceId, fields)
-    },
-})
+    handler: async (ctx: MutationCtx, args: { serviceId: Id<"services">; name?: string; description?: string; duration?: number; price?: number; imageUrl?: string; category?: string; isActive?: boolean }): Promise<unknown> => {
+        const { serviceId, ...fields } = args;
 
+        // Define the allowed categories
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const allowedCategories = ["interior", "exterior", "full", "paint_Correction", "ceramic_Coating"] as const;
+
+        // Use a type guard to ensure the category is one of the allowed values
+        const category = fields.category as typeof allowedCategories[number] | undefined;
+
+        return ctx.db.patch(serviceId, { ...fields, category });
+    },
+});

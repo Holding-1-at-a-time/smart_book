@@ -1,7 +1,7 @@
 import type React from "react"
-import { MainNav } from "@/components/layout/main-nav"
 import { redirect } from "next/navigation"
-import { currentUser } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs/server"
+import { MainNav } from "@/components/layouts/main-nav"
 
 export default async function DashboardLayout({
     children,
