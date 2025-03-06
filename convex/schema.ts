@@ -74,21 +74,17 @@ export default defineSchema({
    * @property role - The role of the user in the organization, for example "admin", "detailer", etc.
    */
   organizations: defineTable({
-    userId: v.id("users"),
-    serviceId: v.id("services"),
-    appointmentId: v.id("appointments"),
-    tenantId: v.id("tenants"), // new field
-    orgEmail: v.string(),
-    orgLogoImageUrl: v.optional(v.string()),
-    orgAddress: v.optional(v.string()),
-    orgPhone: v.optional(v.string()),
-    orgDescription: v.optional(v.string()),
-    orgIsActive: v.boolean(),
-    orgVerified: v.boolean(),
-    orgName: v.string(), // new field
-    orgRole: v.string(), // new field
-    orgSlug: v.string(), // new field
-    tenantName: v.string(), // new field
+    name: v.string(),
+    email: v.string(),
+    logoImageUrl: v.optional(v.string()),
+    address: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    description: v.optional(v.string()),
+    isActive: v.boolean(),
+    verified: v.boolean(),
+    slug: v.string(),
+    tenantId: v.optional(v.id("tenants")),
+    tenantName: v.optional(v.string()),
   })
     .index("by_organizationName", ["orgName"])
     .index("by_organizationEmail", ["orgEmail"])
