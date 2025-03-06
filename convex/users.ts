@@ -56,13 +56,18 @@ export const createUser = mutation({
             preferred_language: "",
             phone_number_verified: false,
             preferred_detailer_id: "",
-            vehicle_preferences: {
-                VIN: args.vehiclePreferences[0],
-                make: args.vehiclePreferences[1],
-                year: args.vehiclePreferences[2],
-                color: args.vehiclePreferences[3],
-                model: args.vehiclePreferences[4],
-            },
+            vehicle_preferences: (function() {
+                if (!args.vehiclePreferences || args.vehiclePreferences.length !== 5) {
+                    throw new Error("Expected vehiclePreferences array to contain exactly 5 elements");
+                }
+                return {
+                    VIN: args.vehiclePreferences[0],
+                    make: args.vehiclePreferences[1],
+                    year: args.vehiclePreferences[2],
+                    color: args.vehiclePreferences[3],
+                    model: args.vehiclePreferences[4],
+                };
+            })(),
             marketing_preferences: {
                 sms_opt_in: false,
                 email_opt_in: false,
