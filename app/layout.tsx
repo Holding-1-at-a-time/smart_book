@@ -5,10 +5,10 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import type { Metadata } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
-import ConvexClientProvider from '@/components/ConvexClientProvider';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ToastProvider } from '@/components/ToastProvider';
+import ConvexClientProvider from '@/components/ConvexClientProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

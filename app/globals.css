@@ -101,20 +101,19 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Utility classes for common styles */
 .sr-only {
-  @apply absolute w-px h-px p-0 m-[-1px] overflow-hidden clip-rect(0, 0, 0, 0) whitespace-nowrap border-0;
+  @apply sr-only;
 }
 
 .mb-4 {
   margin-bottom: 1rem;
 }
 
-/* Component classes for reusable elements */
 @layer components {
+  
   .btn {
-    @apply rounded-md font-medium px-4 py-2 transition-all duration-300;
-  }
+      @apply rounded-md font-medium px-4 py-2 transition-all duration-300;
+    }
 
   .btn-primary {
     @apply bg-primary text-white;
@@ -125,11 +124,26 @@ body {
   }
 
   .input {
-    @apply bg-[#333] text-white rounded-md px-4 py-2 transition-colors duration-300;
+    background-color: #333;
+    color: white;
+    border-radius: 0.375rem;
+    /* rounded-md */
+    padding-left: 1rem;
+    /* px-4 */
+    padding-right: 1rem;
+    /* px-4 */
+    padding-top: 0.5rem;
+    /* py-2 */
+    padding-bottom: 0.5rem;
+    /* py-2 */
+    transition-property: color, background-color;
+    /* transition-colors */
+    transition-duration: 300ms;
+    /* duration-300 */
   }
 
   .card {
-    @apply bg-[#333] shadow-[0_0_10px_rgba(0, 0, 0, 0.2)] rounded-md p-4 transition-transform duration-300;
+    @apply bg-[#333] shadow-[0_0_10px_rgba(0, 0, 0, 0.2)] -rounded-md p-4 transition-transform duration-300;
     transform-style: preserve-3d;
     --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
@@ -315,7 +329,7 @@ body {
   }
 
   .sr-only {
-    absolute: w-px h-px p-0 m-[-1px] overflow-hidden clip-rect(0, 0, 0, 0) whitespace-nowrap border-0;
+    @apply sr-only;
   }
 }
 

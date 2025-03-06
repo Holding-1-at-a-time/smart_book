@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query, QueryCtx } from "./_generated/server"
-import { Id } from "./_generated/dataModel"
+import { Doc, Id } from "./_generated/dataModel"
 
 export const createConversation = mutation({
     args: {
@@ -61,16 +61,14 @@ export const addMessageToConversation = mutation({
         })
     },
 })
-
 export const getUserConversations = query({
     args: { userId: v.id("users") },
-    handler: async (ctx: QueryCtx, args: { userId: Id<"users"> }): Promise<Document<"conversations">[]> => {
-        return await ctx.db.query("conversations").filter(q => q.eq("userId", args.userId))
+    handler: async (ctx: QueryCtx, args: { userId: Id<"users"> }): Promise<Doc<"conversations">[]> => {
+        return ctx.db.query("conversations")
+            .withIndex("by_user", q => q.eq("userId", args.userId))
             .order("desc")
             .collect();
     },
-}
-);
-
+});
 
 

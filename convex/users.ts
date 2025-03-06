@@ -1,6 +1,5 @@
-import { v } from "convex/values"
-import { mutation, query } from "./_generated/server"
-import { Id } from "convex/server";
+import { v } from "convex/values";
+import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
 
 
 /**
@@ -64,21 +63,35 @@ export const createUser = mutation({
                 color: args.vehiclePreferences[3],
                 model: args.vehiclePreferences[4],
             },
-            marketing_preferences: args.marketingPreferences ?? {},
+            marketing_preferences: {
+                sms_opt_in: false,
+                email_opt_in: false,
+            },
         });
     },
-}
-)
+});
 
-export const getUser = query({
-    args: { userId: v.string() },
-    handler: async (ctx, args) => {
-        return ctx.db
-            .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", Id('users', args.userId)))
-            .first()
+
+export const getCurrentUserId = query({
+    args: {
+        organizationId: v.id("organizations"),
+        userId: v.id("users"),
     },
-})
+    /**
+     * Returns the ID of the user with the given `userId`.
+     *
+     * @param ctx - The Convex query context.
+     * @param userId - The ID of the user to retrieve.
+     * @returns The ID of the user, or `null` if no user is found.
+     */
+    handler: async (ctx: QueryCtx, { userId }: { userId: string }): Promise<string | null> => {
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_userId", (q) => q.eq("userId", userId))
+            .first();
+        return user ? user.userId : null;
+    },
+});
 
 export const updateUserPreferences = mutation({
     args: {
@@ -90,18 +103,18 @@ export const updateUserPreferences = mutation({
             preferredTimes: v.optional(v.array(v.string())),
         }),
     },
-    handler: async (ctx, args) => {
+
+    handler: async (ctx: MutationCtx, args: { userId: string; preferences: unknown }) => { // Add types
         const user = await ctx.db
             .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", Id('users')))
+            .withIndex("by_userId", (q) => q.eq("userId", args.userId)) // Use args.userId
             .first()
 
         if (!user) {
             throw new Error("User not found")
         }
 
-        return ctx.db.patch(user._id, {
-            preferences: args.preferences,
+        return await ctx.db.patch(user._id, { // Use await
         })
     },
 });

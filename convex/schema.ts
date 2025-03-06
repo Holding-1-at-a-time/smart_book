@@ -64,9 +64,7 @@ export default defineSchema({
     .index("by_orgId_and_userId", ["organizationId", "userId"])
     .index("by_email_and_tokenIdentifier", ["email", "tokenIdentifier"])
     .index("by_userId_and_token_and_orgId", ["userId", "tokenIdentifier", "organizationId"])
-    .index("by_tokenIdentifier", ["tokenIdentifier"])
-    .index("by_userId", ["userId"]),
-
+    .index("by_tokenIdentifier", ["tokenIdentifier"]),
   /**
    * The organizations table represents the many-to-many relationship between users and organizations.
    * A user can belong to multiple organizations, and an organization can have multiple users.
@@ -117,7 +115,6 @@ export default defineSchema({
     isActive: v.boolean(),
   }).index("by_serviceName", ["serviceName"])
     .index("by_basePrice", ["basePrice"])
-    .index("by_category", ["category"])
     .index("by_duration", ["duration"])
     .index("by_userId", ["userId"])
     .index("by_serviceDescription", ["serviceDescription"])
@@ -227,7 +224,6 @@ export default defineSchema({
     name: v.string(),
     slug: v.string(),
   }).index("by_orgId", ["organizationId"])
-    .index("by_id", ["id"])
     .index("by_slug", ["slug"]),
 
 
