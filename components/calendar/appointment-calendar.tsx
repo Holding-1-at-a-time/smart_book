@@ -11,10 +11,7 @@ import { format } from "date-fns"
 interface AppointmentCalendarProps {
     onSelectSlot: (date: string, startTime: string, endTime: string) => void
 }
-\
-export function AppointmentCalendar({ onSelectSl  startTime: string, endTime: string)
-=> void
-}
+
 
 export function AppointmentCalendar({ onSelectSlot }: AppointmentCalendarProps) {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())

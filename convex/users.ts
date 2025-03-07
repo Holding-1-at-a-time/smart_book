@@ -109,17 +109,24 @@ export const updateUserPreferences = mutation({
         }),
     },
 
-    handler: async (ctx: MutationCtx, args: { userId: string; preferences: unknown }) => { // Add types
+    handler: async (ctx: MutationCtx, args: { userId: string; preferences: unknown }) => {
         const user = await ctx.db
             .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", args.userId)) // Use args.userId
+            .withIndex("by_userId", (q) => q.eq("userId", args.userId))
             .first()
 
         if (!user) {
             throw new Error("User not found")
         }
 
-        return await ctx.db.patch(user._id, { // Use await
-        })
+        return await ctx.db.patch(user._id, {
+            preferences: args.preferences as {
+                carType?: string | undefined;
+                preferredServices?: string[] | undefined;
+                preferredDays?: string[] | undefined;
+                preferredTimes?: string[] | undefined;
+            },
+        });
     },
-});
+},
+);

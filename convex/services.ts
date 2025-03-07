@@ -37,12 +37,21 @@ export const createService = mutation({
 
         try {
             return await ctx.db
-                .query("services")
-                .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
-                .collect();
+                .insert("services", {
+                    organizationId: args.organizationId,
+                    userId: args.userId,
+                    tenantId: args.tenantId,
+                    serviceName: args.serviceName,
+                    serviceDescription: args.serviceDescription,
+                    duration: args.duration,
+                    basePrice: args.basePrice,
+                    imageUrl: args.imageUrl,
+                    category: args.category,
+                    isActive: args.isActive,
+                });
         } catch (error) {
-            console.error("Error querying services by organization ID:", error);
-            throw new Error("Failed to retrieve services");
+            console.error("Error creating service:", error);
+            throw new Error("Failed to create service");
         }
     },
 });
@@ -69,77 +78,23 @@ export const getAllActiveServices = query({
             v.literal("paint_Correction"),
             v.literal("ceramic_Coating")
         ),
+        isActive: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        return await ctx.db
-            .query("services")
-            .withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId))
-            .collect()
-
-
-    },
-},
-);
-/**
- * Retrieves a list of services based on the provided filters.
- *
- * @param ctx - The Convex query context.
- * @param args - The filter arguments.
- * @returns A promise that resolves to a list of services.
- */
-
-export const getServicesByFilters = query({
-    args: {
-        organizationId: v.id("organizations"),
-        serviceId: v.string(),
-        serviceName: v.string(),
-        userId: v.id("users"),
-        serviceDescription: v.string(),
-        duration: v.number(), // in minutes
-        basePrice: v.number(),
-        category: v.union(
-            v.literal("interior"),
-            v.literal("exterior"),
-            v.literal("full"),
-            v.literal("paint_Correction"),
-            v.literal("ceramic_Coating")
-        ),
-    },
-    handler: async (ctx, args) => {
-        const query = ctx.db.query("services");
+        let query = ctx.db.query("services");
 
         if (args.organizationId) {
-            query.withIndex("by_orgId", (q) => q.eq("organizationId", args.organizationId));
+            query = query.filter((q) => q.eq(q.field("organizationId"), args.organizationId));
         }
 
-
-        if (args.serviceName) {
-            query.withIndex("by_serviceName", (q) => q.eq("serviceName", args.serviceName));
-        }
-
-        if (args.userId) {
-            query.withIndex("by_userId", (q) => q.eq("userId", args.userId));
-        }
-
-        if (args.serviceDescription) {
-            query.withIndex("by_serviceDescription", (q) => q.eq("serviceDescription", args.serviceDescription));
-        }
-
-        if (args.duration) {
-            query.withIndex("by_duration", (q) => q.eq("duration", args.duration));
-        }
-
-        if (args.basePrice) {
-            query.withIndex("by_basePrice", (q) => q.eq("basePrice", args.basePrice));
-        }
-
-        if (args.category) {
-            query.withIndex("by_category", (q) => q.eq("category", args.category));
+        if (args.isActive !== undefined) {
+            query = query.filter((q) => q.eq(q.field("isActive"), args.isActive));
         }
 
         return await query.collect();
     },
 });
+
 
 /**
  * Gets a service by its ID.

@@ -41,15 +41,16 @@ export default clerkMiddleware(async (auth, req) => {
     if (debug) {
       console.log('Processing protected route:', req.nextUrl.pathname);
     }
+    // Check if user is authenticated and get user details
 
-    // Verify authentication
     const { userId, orgId, sessionClaims } = await auth();
 
-    // Redirect unauthenticated users
+    // Redirect to sign-in for unauthenticated users
     if (!userId) {
       if (debug) {
         console.log('Redirecting to sign-in');
       }
+      // Return a redirect response to sign-in URL
       return (await auth()).redirectToSignIn({ returnBackUrl: req.url });
     }
 

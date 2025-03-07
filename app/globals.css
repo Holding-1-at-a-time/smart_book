@@ -1,20 +1,22 @@
+@import 'tailwindcss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary: #00AE98;
-  --primary-dark: #009B86;
-  --accent: #4B5563;
-  --primary-rgb: 0, 174, 152;
-  --primary-dark-rgb: 0, 155, 134;
-  --accent-rgb: 75, 85, 99;
-
+  --color-primary: #00ae98;
+  --color-primary-dark: #007761;
+  --color-accent: #9ca3af;
+  --color-background: #111827;
+  --color-foreground: #f9fafb;
+  --color-border: #374151;
+  --color-ring: #00ae98;
 }
 
 * {
-  border-color: var(--border);
-  outline-color: hsl(var(--ring) / 0.5);
+  border-color: var(--color-border);
+  outline-color: hsl(var(--color-ring) / 0.5);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -25,25 +27,14 @@ body {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   line-height: 1.6;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: var(--background);
-  color: var(--foreground);
-  line-height: 1.6;
-  gap: 20px;
 }
 
 @keyframes spin {
@@ -60,7 +51,6 @@ body {
 }
 
 @keyframes float {
-
   0% {
     transform: translateY(0);
   }
@@ -75,11 +65,11 @@ body {
 }
 
 .shadow-glow {
-  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+  box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.5);
 }
 
 .filter-drop-shadow-glow {
-  filter: drop-shadow(0 0 10px rgba(var(--primary-rgb), 0.7));
+  filter: drop-shadow(0 0 10px rgba(var(--color-primary-rgb), 0.7));
 }
 
 .perspective-3d {
@@ -88,7 +78,6 @@ body {
 
 .rotate-3d {
   transition: transform 0.3s;
-  /* Apply transition directly */
   transform: rotateX(10deg) rotateY(-10deg);
 }
 
@@ -108,195 +97,159 @@ body {
   margin-bottom: 1rem;
 }
 
-@layer components {
-  
-  .btn {
-      @apply rounded-md font-medium px-4 py-2 transition-all duration-300;
-    }
-
-  .btn-primary {
-    @apply bg-primary text-white;
-  }
-
-  .btn-secondary {
-    @apply bg-accent text-white transition-colors duration-300;
-  }
-
-  .input {
-    background-color: #333;
-    color: white;
-    border-radius: 0.375rem;
-    /* rounded-md */
-    padding-left: 1rem;
-    /* px-4 */
-    padding-right: 1rem;
-    /* px-4 */
-    padding-top: 0.5rem;
-    /* py-2 */
-    padding-bottom: 0.5rem;
-    /* py-2 */
-    transition-property: color, background-color;
-    /* transition-colors */
-    transition-duration: 300ms;
-    /* duration-300 */
-  }
-
-  .card {
-    @apply bg-[#333] shadow-[0_0_10px_rgba(0, 0, 0, 0.2)] rounded-md p-4 transition-transform duration-300;
-    transform-style: preserve-3d;
-    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  }
-
-  .card:hover {
-    @apply scale-105;
-  }
-
-  .text-gradient {
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    background-image: linear-gradient(to right, var(--primary), #4ade80);
-  }
-
-  .bg-gradient {
-    background-image: linear-gradient(to right, var(--primary), #4ade80);
-  }
-
-  .spinner {
-    @apply relative w-[100px] h-[100px];
-  }
-
-  .spinner::before,
-  .spinner::after,
-  .spinner-inner {
-    @apply absolute inset-0 rounded-full content-[''];
-  }
-
-  .spinner::before {
-    @apply border-8 border-t-primary border-transparent;
-    animation: spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-
-  .spinner::after {
-    @apply w-[75%] h-[75%] top-[12.5%] left-[12.5%] border-t-6 border-t-[#00FFCC] border-transparent;
-    animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
-  }
-
-  .spinner-inner {
-    @apply border-t-8 border-t-[#007761] border-transparent;
-    animation: spin 1s linear infinite;
-  }
-
-  .glow {
-    @apply absolute w-[150%] h-[150%] top-[-25%] left-[-25%] rounded-full blur-[10px];
-    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.4) 20%, transparent 80%);
-    animation: pulse 1.5s infinite alternate;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl font-bold mb-4;
-  }
-
-  .h2 {
-    @apply text-3xl sm:text-4xl md:text-5xl font-bold mb-4;
-  }
-
-  .h3 {
-    @apply text-2xl sm:text-3xl md:text-4xl font-bold mb-4;
-  }
-
-  .p {
-    @apply mb-4;
-  }
-
-  .input-base,
-  textarea,
-  select {
-    @apply input mb-4;
-  }
-
-  .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .flex-center {
-    @apply flex justify-center items-center;
-  }
-
-  .flex-between {
-    @apply flex justify-between items-center;
-  }
-
-  ::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: var(--background);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--primary);
-    border-radius: var(--radius);
-    border-style: var(--tw-shadow-colored);
-    border-color: var(--primary);
-    border-width: 0.125rem;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-dark);
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: var(--background);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--primary);
-    border-radius: var(--radius);
-    border-style: var(--tw-shadow-colored);
-    border-color: var(--primary);
-    border-width: 0.125rem;
-
-
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-dark);
-  }
+.btn-primary {
+  @apply text-white;
 }
+
+
+.btn-secondary {
+  @apply bg-accent text-white transition-colors duration-300;
+}
+
+.input {
+  background-color: #333;
+  color: white;
+  border-radius: 0.375rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  transition-property: color, background-color;
+  transition-duration: 300ms;
+}
+
+.card {
+  transform-style: preserve-3d;
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+
+.card:hover {
+  @apply scale-105;
+}
+
+.text-gradient {
+  background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, var(--color-primary), #4ade80);
+}
+
+.bg-gradient {
+  background-image: linear-gradient(to right, var(--color-primary), #4ade80);
+}
+
+.spinner {
+  @apply relative w-[100px] h-[100px];
+}
+
+.spinner::before,
+.spinner::after,
+.spinner-inner {
+  @apply absolute inset-0 rounded-full content-[''];
+}
+
+.spinner::before {
+  @apply border-8 border-t-primary border-transparent;
+  animation: spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.spinner::after {
+  @apply w-[75%] h-[75%] top-[12.5%] left-[12.5%] border-t-6 border-t-[#00FFCC] border-transparent;
+  animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
+}
+
+.spinner-inner {
+  @apply border-t-8 border-t-[#007761] border-transparent;
+  animation: spin 1s linear infinite;
+}
+
+.glow {
+  @apply absolute w-[150%] h-[150%] top-[-25%] left-[-25%] rounded-full blur-[10px];
+  background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.4) 20%, transparent 80%);
+  animation: pulse 1.5s infinite alternate;
+}
+
+.blur-sm {
+  --tw-blur: blur(var(--blur-sm));
+  filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-grayscale, );
+}
+
+.h1 {
+  @apply text-4xl sm:text-5xl md:text-6xl font-bold mb-4;
+}
+
+.h2 {
+  @apply text-3xl sm:text-4xl md:text-5xl font-bold mb-4;
+}
+
+.h3 {
+  @apply text-2xl sm:text-3xl md:text-4xl font-bold mb-4;
+}
+
+.p {
+  @apply mb-4;
+}
+
+.input-base,
+textarea,
+select {
+  @apply input mb-4;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.flex-center {
+  @apply flex justify-center items-center;
+}
+
+.flex-between {
+  @apply flex justify-between items-center;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: var(--radius);
+  border-style: var(--tw-shadow-colored);
+  border-color: var(--color-primary);
+  border-width: 0.125rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-dark);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-background);
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary: #00AE98;
-    /* Your primary color remains unchanged */
-    --primary-dark: #007761;
-    /* Adjust if needed for dark mode contrast */
-    --accent: #9CA3AF;
-    /* Example: Adjust accent color for dark mode */
-    --background: #111827;
-    /* Example: Dark background color */
-    --foreground: #F9FAFB;
-    /* Example: Light foreground color */
-    --border: #374151;
-    /* Example: Dark border color */
-    --ring: #00AE98;
-    /* Example: Ring color */
+    --color-primary: #00ae98;
+    --color-primary-dark: #007761;
+    --color-accent: #9ca3af;
+    --color-background: #111827;
+    --color-foreground: #f9fafb;
+    --color-border: #374151;
+    --color-ring: #00ae98;
   }
 
   .input {
     background-color: #333;
     color: white;
   }
-
 
   .card {
     background-color: #27272a;
@@ -307,11 +260,16 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    background-image: linear-gradient(to right, var(--primary), #4ade80);
+    background-image: linear-gradient(to right, var(--color-primary), #4ade80);
+  }
+
+  .blur-sm {
+    --tw-blur: blur(var(--blur-sm));
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-grayscale, );
   }
 
   .bg-gradient {
-    background-image: linear-gradient(to right, var(--primary), #4ade80);
+    background-image: linear-gradient(to right, var(--color-primary), #4ade80);
   }
 
   .rotate-3d {
@@ -346,9 +304,12 @@ body {
     display: block;
   }
 
+  .blur-sm {
+    --tw-blur: blur(var(--blur-sm));
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-grayscale, );
+  }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .container {
     max-width: 100%;
