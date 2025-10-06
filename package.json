@@ -16,7 +16,7 @@
     "@clerk/nextjs": "^6.12.4",
     "@clerk/themes": "^2.2.20",
     "@radix-ui/react-slot": "^1.1.2",
-    "@tailwindcss/postcss": "^4.0.11",
+    "@tailwindcss/postcss": "^4.1.14",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "ai": "^4.1.54",
